@@ -1,9 +1,8 @@
 #include <stdio.h>
 int main(int argc, char *argv[])
 {
-	// if (argc != 2)
-	// 	return 1;
-	argv[1] = "input.txt";
+	if (argc != 2)
+		return 1;
 	FILE *input = fopen(argv[1], "r");
 	int increases = -1;
 	int depth, prevDepth = 0;
