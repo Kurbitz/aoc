@@ -2,8 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
-#define LINES 12
-#define LEN 5
+#define LEN 12
 
 struct node {
 	int data[LEN];
@@ -15,7 +14,9 @@ void addLast(node **list, const int *data);
 void addFirst(node **list, const int *data);
 static struct node *createListNode(const int *data);
 void occurrance(node **list, int *occ);
-void removeReadings(node **list, int *occ, int pos);
+void removeCO2Readings(node **list, int *occ, int pos, int *lines);
+void removeO2Readings(node **list, int *occ, int pos, int *lines);
+int numberOfNodesInList(const node *list);
 
 
 int main(int argc, char *argv[])
@@ -36,76 +37,134 @@ int main(int argc, char *argv[])
 
 int part2(FILE *input)
 {
-	int co2Key[LEN] = {0}, o2Key[LEN] = {0};
-	int lines = 0, co2Val = 0, o2Val = 0, o2Line, co2Line;
+	int lines = 0, o2Lines, co2Lines, co2Val = 0, o2Val = 0;
 	char line[LEN * 2];
-	int arr[1000][LEN] = {0};
-	node *head = NULL;
+	node *o2List = NULL;
+	node *co2List = NULL;
 	int tData[LEN] = {0};
 
 	while (fgets(line, LEN*2, input))
 	{
 		for (int i = 0; i < LEN; i++)
 			tData[i] = line[i] - '0';
-		addLast(&head, tData);
+		addLast(&o2List, tData);
+		addLast(&co2List, tData);
 		lines++;
 	}
-	int a = 1;
-
-	
-	while (a)
+	co2Lines = o2Lines = lines;
+	int i = 0;	
+	while (o2List->next != NULL)
 	{
-		for (int i = 0; i < LEN; i++)
-		{
-			int bitOc[LEN] = {0};
-			node *tmp = head, *prev = head;
-			occurrance(&head, bitOc);
-			removeReadings(&head, bitOc, i);
-		}
+		int bitOc[LEN] = {0};
+		occurrance(&o2List, bitOc);
+		removeO2Readings(&o2List, bitOc, i, &o2Lines);
+		i++;
+	}
+	i = 0;
+	while (co2List->next != NULL)
+	{
+		int bitOc[LEN] = {0};
+		occurrance(&co2List, bitOc);
+		removeCO2Readings(&co2List, bitOc, i, &co2Lines);
+		i++;
 	}
 	
 	for (int i = LEN - 1, j = 0; i >= 0; i--, j++)
 	{
-		// o2Val += arr[o2Line][i] * pow(2, j);
-		// co2Val += arr[co2Line][i] * pow(2, j);
+		o2Val += o2List->data[i] * pow(2, j);
+		co2Val += co2List->data[i] * pow(2, j);
 	}
-	printf("%d\n", o2Val*co2Val);
-	return 0;
+	return o2Val*co2Val;
 }
 
-void removeReadings(node **list, int *occ, int pos)
+void removeO2Readings(node **list, int *occ, int pos, int *lines)
 {
 	node *tmp = *list;
 	node *prev;
+	int removed = 0;
+	int bitcrit = occ[pos] >= (float)(*lines)/2;
 
-	if (tmp->data[pos] != (occ[pos] >= LINES/2))
+	
+
+	while (tmp != NULL && tmp->data[pos] != bitcrit)
 	{
 		*list = tmp->next;
 		free(tmp);
+		removed++;
+		tmp = *list;
 	}
 	
 	while (tmp != NULL)
 	{
-		if (tmp->data == (occ[pos] >= LINES/2))
+		while (tmp != NULL && tmp->data[pos] == bitcrit)
 		{
 			prev = tmp;
 			tmp = tmp->next;
 		}
-		else
-		{
-			prev->next = tmp->next;
-			free(tmp);
-		}
+		if (tmp == NULL)
+			break;
+		prev->next = tmp->next;
+		free(tmp);
+		removed++;
+		tmp = tmp->next;
 	}
+	*lines -= removed;
 }
+
+void removeCO2Readings(node **list, int *occ, int pos, int *lines)
+{
+	node *tmp = *list;
+	node *prev;
+	int removed = 0;
+	int bitcrit = occ[pos] < (float)(*lines)/2;	
+
+	while (tmp != NULL && tmp->data[pos] != bitcrit)
+	{
+		*list = tmp->next;
+		free(tmp);
+		removed++;
+		tmp = *list;
+	}
+	
+	while (tmp != NULL)
+	{
+		while (tmp != NULL && tmp->data[pos] == bitcrit)
+		{
+			prev = tmp;
+			tmp = tmp->next;
+		}
+		if (tmp == NULL)
+			break;
+		prev->next = tmp->next;
+		free(tmp);
+		removed++;
+		tmp = tmp->next;
+	}
+	*lines -= removed;
+}
+
 
 void occurrance(node **list, int *occ)
 {
 	node *tmp = *list;
-	while (tmp->next != NULL)
+	while (tmp != NULL)
 	{
 		for (int i = 0; i < LEN; i++)
 			occ[i] += tmp->data[i];
+		tmp = tmp->next;
+	}
+}
+
+void occurranceCO2(node **list, int *occ)
+{
+	node *tmp = *list;
+	while (tmp != NULL)
+	{
+		for (int i = 0; i < LEN; i++)
+		{
+			if (tmp->data == 0)
+				occ[i] += 1;
+		}
 		tmp = tmp->next;
 	}
 }
@@ -154,4 +213,11 @@ static struct node *createListNode(const int *data)
 		n->data[i] = data[i];
 	n->next = NULL;
 	return n;
+}
+
+int numberOfNodesInList(const node *list)
+{
+	if (list == NULL)
+		return 0;
+	return 1 + numberOfNodesInList(list->next);
 }
