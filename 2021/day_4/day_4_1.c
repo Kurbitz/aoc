@@ -3,6 +3,8 @@
 #include <string.h>
 
 int part1(FILE *input);
+int checkBoard(int board[5][5]);
+int calculateScore(int board[5][5], int mask[5][5], int winningNo);
 
 int main(int argc, char *argv[])
 {
@@ -14,9 +16,8 @@ int main(int argc, char *argv[])
 	FILE *input = fopen(fName, "r");
 	if (input == NULL)
 		return 2;
-	
-	part1(input);
-	// skapa två multidimensionella [2|3] arrayer.
+
+	printf("score: %d\n", part1(input));
 	return 0;
 }
 
@@ -55,7 +56,72 @@ int part1(FILE *input)
 		}
 		lines++;
 	}
-	
-	
+	int wins = 0;
+	for (int num = 0; num < 100; num++)
+	{
+		for (int board = 0; board < 100; board++)
+		{
+			for (int row = 0; row < 5; row++)
+			{
+				for (int col = 0; col < 5; col++)
+				{
+					if (boards[board][row][col] == numbers[num])
+					{
+						hitMask[board][row][col] = 1;
+						printf("board %d\n", board);
+						if (checkBoard(hitMask[board]))
+						{
+							return calculateScore(boards[board], hitMask[board], numbers[num]);
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
 
+int checkBoard(int board[5][5])
+{
+	int size = 5;
+	int i, j, sum = 0;
+
+	for (i = 0; i < size; i++)
+	{
+		for (j = 0; j < size; j++)
+		{
+			sum = sum + board[i][j];
+			if (board[i][j])
+				printf("\033[0;31m");			
+			printf("%d ", board[i][j]);
+			printf("\033[0m"); 
+		}
+		printf("\n");
+		if (sum == 5)
+			return 1;
+		sum = 0;
+	}
+	printf("\n");
+	for (j = 0; j < size; j++)
+	{
+		for (i = 0; i < size; i++)
+		{
+			sum = sum + board[i][j];
+		}
+		if (sum == 5)
+			return 1;
+		sum = 0;
+	}
+	return 0;
+}
+
+int calculateScore(int board[5][5], int mask[5][5], int winningNo)
+{
+	int i, j, sum = 0;
+	for (i = 0; i < 5; i++)
+		for (j = 0; j < 5; j++)
+			if (mask[i][j] == 0)
+				sum += board[i][j];
+
+	return sum * winningNo;
 }
