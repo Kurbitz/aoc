@@ -56,28 +56,17 @@ int part1(FILE *input)
 		}
 		lines++;
 	}
-	int wins = 0;
 	for (int num = 0; num < 100; num++)
-	{
 		for (int board = 0; board < 100; board++)
-		{
 			for (int row = 0; row < 5; row++)
-			{
 				for (int col = 0; col < 5; col++)
-				{
 					if (boards[board][row][col] == numbers[num])
 					{
 						hitMask[board][row][col] = 1;
 						printf("board %d\n", board);
 						if (checkBoard(hitMask[board]))
-						{
 							return calculateScore(boards[board], hitMask[board], numbers[num]);
-						}
 					}
-				}
-			}
-		}
-	}
 	return 0;
 }
 
@@ -85,7 +74,7 @@ int checkBoard(int board[5][5])
 {
 	int size = 5;
 	int i, j, sum = 0;
-
+	int result = 0;
 	for (i = 0; i < size; i++)
 	{
 		for (j = 0; j < size; j++)
@@ -98,7 +87,7 @@ int checkBoard(int board[5][5])
 		}
 		printf("\n");
 		if (sum == 5)
-			return 1;
+			result = 1;
 		sum = 0;
 	}
 	printf("\n");
@@ -109,10 +98,10 @@ int checkBoard(int board[5][5])
 			sum = sum + board[i][j];
 		}
 		if (sum == 5)
-			return 1;
+			result = 1;
 		sum = 0;
 	}
-	return 0;
+	return result;
 }
 
 int calculateScore(int board[5][5], int mask[5][5], int winningNo)
