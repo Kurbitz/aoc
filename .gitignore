@@ -11,3 +11,4 @@
 **/test.c
 .vscode/
 .vscode/*
+**/target
