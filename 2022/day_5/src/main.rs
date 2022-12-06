@@ -92,11 +92,15 @@ fn part_1(input: &mut Input) -> String {
     return result;
 }
 
+fn part_2(input: &mut Input) -> String {
+}
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::VecDeque;
 
-    use crate::{parse_input, part_1, Input, Move};
+    use crate::{parse_input, part_1, part_2, Input, Move};
 
     #[test]
     fn example_parse() {
@@ -138,5 +142,11 @@ mod tests {
         let message = "CMZ";
         let mut input = parse_input("example.txt").unwrap();
         assert_eq!(message, part_1(&mut input));
+    }
+    #[test]
+    fn example_solve_part_2() {
+        let message = "MCD";
+        let mut input = parse_input("example.txt").unwrap();
+        assert_eq!(message, part_2(&mut input))
     }
 }
