@@ -17,9 +17,11 @@ struct Input {
 }
 
 fn main() {
-    let mut input = parse_input("input.txt").expect("Parsing error");
-    let message = part_1(&mut input);
-    println!("{}", message);
+    let input = parse_input("input.txt").expect("Parsing error");
+    let message_1 = part_1(&mut input.clone());
+    let message_2 = part_2(&mut input.clone());
+    println!("Part 1: {}", message_1);
+    println!("Part 2: {}", message_2);
 }
 
 fn parse_input(filename: &str) -> Result<Input, Box<dyn Error>> {
@@ -93,7 +95,23 @@ fn part_1(input: &mut Input) -> String {
 }
 
 fn part_2(input: &mut Input) -> String {
-}
+    for mv in input.moves.iter() {
+        let mut buf: Vec<char> = Vec::new();
+        for _ in 0..mv.amount {
+            let c = input.stacks[mv.from - 1].pop().unwrap();
+            buf.push(c);
+        }
+        buf.reverse();
+        input.stacks[mv.to - 1].append(&mut buf);
+    }
+    let mut result: Vec<char> = Vec::new();
+    for c in &input.stacks {
+        result.push(*c.last().unwrap());
+    }
+
+    let result: String = result.into_iter().collect();
+
+    return result;
 }
 
 #[cfg(test)]
