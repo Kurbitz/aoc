@@ -2,7 +2,8 @@ use std::collections::HashMap;
 
 fn main() {
     let input = parse_input("input.txt");
-    println!("{}", part_1(input));
+    println!("{}", part_1(input.clone()));
+    println!("{}", part_2(input));
 }
 
 fn parse_input(filename: &str) -> HashMap<String, u32> {
@@ -44,6 +45,15 @@ fn part_1(input: HashMap<String, u32>) -> u32 {
     input.values().filter(|&d| *d < 100000).sum()
 }
 
+fn part_2(input: HashMap<String, u32>) -> u32 {
+    let target_size = 30000000 - (70000000 - input.get("").unwrap());
+    input
+        .values()
+        .filter(|&d| *d >= target_size)
+        .map(|f| *f)
+        .min()
+        .unwrap()
+}
 
 #[cfg(test)]
 mod tests {
@@ -55,4 +65,9 @@ mod tests {
         assert_eq!(95437, part_1(input));
     }
 
+    #[test]
+    fn test_part_2() {
+        let input = parse_input("example.txt");
+        assert_eq!(24933642, part_2(input));
+    }
 }
