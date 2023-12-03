@@ -38,3 +38,7 @@ func SolutionOne(input []string) int {
 	}
 	return sum
 }
+
+func SolutionTwo(input []string) int {
+	return 0
+}

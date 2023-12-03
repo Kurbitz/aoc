@@ -15,3 +15,18 @@ func TestSampleSolutionOne(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestSampleSolutionTwo(t *testing.T) {
+	lines := []string{
+		"two1nine",
+		"eightwothree",
+		"abcone2threexyz",
+		"xtwone3four",
+		"4nineeightseven2",
+		"zoneight234",
+		"7pqrstsixteen",
+	}
+	if SolutionTwo(lines) != 281 {
+		t.FailNow()
+	}
+}
