@@ -25,8 +25,9 @@ func TestSampleSolutionTwo(t *testing.T) {
 		"4nineeightseven2",
 		"zoneight234",
 		"7pqrstsixteen",
+		"eightwo",
 	}
-	if SolutionTwo(lines) != 281 {
+	if SolutionTwo(lines) != 363 {
 		t.FailNow()
 	}
 }
